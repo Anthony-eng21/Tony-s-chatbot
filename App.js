@@ -4,10 +4,10 @@ import ChatGPT from "./src/index";
 
 export default function App() {
   return (
-      <View style={styles.container}>
-        <StatusBar style="auto" />
+    <View style={styles.container}>
+      <StatusBar style="auto" />
         <ChatGPT />
-      </View>
+    </View>
   );
 }
 

@@ -7,50 +7,57 @@ import {
   TouchableOpacity,
   KeyboardAvoidingView,
   Platform,
-  Keyboard
+  Keyboard,
 } from "react-native";
 import React, { useState } from "react";
 import axios from "axios";
 import LoadingOverlay from "../LoadingOverlay";
+import APIKey from "../key";
 //DO NOT USE PRETTIER CONFIG ON THIS FILE
 
 const ChatGPT = () => {
   const [data, setData] = useState([]);
-  const apiKey = "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";
-  const apiUrl =
+  const apiKey = APIKey; //replace this value with your key.
+  const apiUrlEndpoint =
     "https://api.openai.com/v1/engines/text-davinci-002/completions"; //endpoint
   const [textInput, setTextInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   //makes api call => updates app state
   const handleSend = async () => {
     const prompt = textInput;
     setIsLoading(true);
-    const response = await axios.post(
-      apiUrl,
-      {
-        prompt: prompt,
-        max_tokens: 1024,
-        temperature: 0.5,
-      },
-      {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${apiKey}`,
+    try {
+      const response = await axios.post(
+        apiUrlEndpoint,
+        {
+          prompt: prompt,
+          max_tokens: 1024,
+          temperature: 0.5,
         },
-      }
-    );
-    const text = response.data.choices[0].text;
-    //spread all the current data then add two new objects
-    //with type user then text with the text field of the current textInput state
-    //and on of type bot with the extracted data form the api response
-    setData([
-      ...data,
-      { type: "user", text: textInput }, //you
-      { type: "bot", text: text }, //bot
-    ]);
-    setIsLoading(false);
-    setTextInput(""); //clears input string for next input
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${apiKey}`,
+          },
+        }
+      );
+      const text = response.data.choices[0].text; //data extraction
+      //spread all the current data then add two new objects
+      //with type user then text with the text field of the current textInput state
+      //and on of type bot with the extracted data form the api response
+      setData([
+        ...data,
+        { type: "user", text: textInput }, //you
+        { type: "bot", text: text }, //bot
+      ]);
+      setIsLoading(false);
+      setTextInput(""); //clears input string for next input
+    } catch (error) {
+      setError(error);
+      setIsLoading(false);
+    }
   };
 
   if (isLoading) {
@@ -58,10 +65,10 @@ const ChatGPT = () => {
   }
 
   const handleKeyDown = (e) => {
-    if(e.nativeEvent.key == "Enter" || window.pressed){
-        Keyboard.dismiss();
+    if (e.nativeEvent.key === "Enter" || window.pressed) {
+      Keyboard.dismiss();
     }
-}  
+  };
 
   return (
     <View style={styles.container}>
@@ -101,7 +108,7 @@ const ChatGPT = () => {
           style={styles.input}
           value={textInput}
           onChangeText={(text) => setTextInput(text)}
-          placeholder={"ask anything powered by openAI"}
+          placeholder={"ask anything powered by OpenAI"}
           placeholderTextColor="#fff"
           onSubmitEditing={handleSend}
           keyboardType="default"
@@ -109,7 +116,7 @@ const ChatGPT = () => {
         />
       </KeyboardAvoidingView>
       <TouchableOpacity style={styles.button} onPress={handleSend}>
-        <Text style={styles.buttonText}>Lets go</Text>
+        <Text style={styles.buttonText}>send</Text>
       </TouchableOpacity>
     </View>
   );

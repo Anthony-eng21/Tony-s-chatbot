@@ -1,13 +1,14 @@
 {
   "expo": {
-    "name": "tonysbot",
-    "slug": "tonysbot",
+    "name": "Haileys Bot",
+    "slug": "haileys-bot",
+    "description": "made this for my girlfriend.",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/heading.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/haileys-bot.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
